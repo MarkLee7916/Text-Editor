@@ -98,6 +98,9 @@ public class GUI {
 		search.addActionListener(actionEvent -> {
 			text.getHighlighter().removeAllHighlights();
 			searches.clear();
+			
+			if (textSearch.getText().isEmpty())
+				return;
 
 			int index = -1;
 			while ((index = text.getText().indexOf(textSearch.getText(), index + 1)) != -1) {

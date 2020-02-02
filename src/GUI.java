@@ -34,7 +34,9 @@ import javax.swing.text.Highlighter.HighlightPainter;
 
 public class GUI {
 	JTextArea text;
+	// Caches searches between calls to regex and search
 	List<Integer> searches;
+	// Helper data structures for searching and regex searching
 	List<Integer> sizes;
 	int index;
 

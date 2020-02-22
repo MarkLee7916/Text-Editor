@@ -97,6 +97,7 @@ public class GUI {
 		search.addActionListener(actionEvent -> {
 			text.getHighlighter().removeAllHighlights();
 			searches.clear();
+			sizes.clear();
 			
 			if (textSearch.getText().isEmpty())
 				return;
@@ -113,6 +114,7 @@ public class GUI {
 		regex.addActionListener(actionEvent -> {
 			text.getHighlighter().removeAllHighlights();
 			searches.clear();
+			sizes.clear();
 
 			Pattern pattern;
 			try {

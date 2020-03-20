@@ -16,7 +16,7 @@ import javax.swing.text.Highlighter.HighlightPainter;
 
 public class Search {
 	
-	// Helper data structures to cache searche results
+	// Helper data structures to cache search results
 	private List<Integer> searches;
 	private List<Integer> sizes;
 	private int index;

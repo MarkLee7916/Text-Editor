@@ -15,9 +15,13 @@ import javax.swing.text.Highlighter;
 import javax.swing.text.Highlighter.HighlightPainter;
 
 public class Search {
+	
+	// Helper data structures to cache searche results
 	private List<Integer> searches;
 	private List<Integer> sizes;
 	private int index;
+	
+	// Central text area for everything to operate on
 	private JTextArea text;
 	
 	public Search(JTextArea t) {

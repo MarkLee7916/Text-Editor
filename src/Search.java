@@ -15,15 +15,11 @@ import javax.swing.text.Highlighter;
 import javax.swing.text.Highlighter.HighlightPainter;
 
 public class Search {
-	
-	// Helper data structures to cache search results
 	private List<Integer> searches;
 	private List<Integer> sizes;
 	private int index;
-	
-	// Central text area for everything to operate on
 	private JTextArea text;
-	
+
 	public Search(JTextArea t) {
 		searches = new ArrayList<>();
 		sizes = new ArrayList<>();
@@ -31,8 +27,37 @@ public class Search {
 	}
 
 	public void addSearchBehaviour(JButton search, JButton prev, JButton next, JButton regex, JTextField textSearch) {
-		// Iterate though textArea, adding matching indexes to the searches List and
-		// highlighting the matching words
+		addSubstringBehaviour(search, textSearch);
+		addRegexBehaviour(regex, textSearch);
+		addSwitchingBehaviour(prev, next);
+	}
+
+	private void addSwitchingBehaviour(JButton prev, JButton next) {
+		// Moves to next match
+		next.addActionListener(actionEvent -> {
+			if (searches.isEmpty())
+				return;
+
+			if (index >= searches.size() - 1)
+				index = -1;
+
+			highlightUniqueItem(searches.get(++index), sizes.get(index), Color.cyan);
+		});
+
+		// Moves to previous match
+		prev.addActionListener(actionEvent -> {
+			if (searches.isEmpty())
+				return;
+
+			if (index == 0)
+				index = searches.size();
+
+			highlightUniqueItem(searches.get(--index), sizes.get(index), Color.cyan);
+		});
+	}
+
+	// Highlights every substring that matches the search
+	private void addSubstringBehaviour(JButton search, JTextField textSearch) {
 		search.addActionListener(actionEvent -> {
 			text.getHighlighter().removeAllHighlights();
 			searches.clear();
@@ -43,13 +68,15 @@ public class Search {
 
 			int index = -1;
 			while ((index = text.getText().indexOf(textSearch.getText(), index + 1)) != -1) {
-				highlightItem(index, textSearch.getText().length(), Color.pink, false);
+				highlightItem(index, textSearch.getText().length(), Color.pink);
 				searches.add(index);
 				sizes.add(textSearch.getText().length());
 			}
 		});
+	}
 
-		// Searches using a regex on a word by word basis
+	private void addRegexBehaviour(JButton regex, JTextField textSearch) {
+		// Highlights every word that matches the regex
 		regex.addActionListener(actionEvent -> {
 			text.getHighlighter().removeAllHighlights();
 			searches.clear();
@@ -70,7 +97,7 @@ public class Search {
 				if (i == len || text.getText().charAt(i) == ' ' || text.getText().charAt(i) == '\n') {
 					Matcher match = pattern.matcher(text.getText().substring(curr, i));
 					if (match.find()) {
-						highlightItem(curr, i - curr, Color.pink, false);
+						highlightItem(curr, i - curr, Color.pink);
 						searches.add(curr);
 						sizes.add(i - curr);
 					}
@@ -78,42 +105,22 @@ public class Search {
 				}
 			}
 		});
-
-		// Moves to next match
-		next.addActionListener(actionEvent -> {
-			if (searches.isEmpty())
-				return;
-
-			if (index >= searches.size() - 1)
-				index = -1;
-
-			highlightItem(searches.get(++index), sizes.get(index), Color.cyan, true);
-		});
-
-		// Moves to previous match
-		prev.addActionListener(actionEvent -> {
-			if (searches.isEmpty())
-				return;
-
-			if (index == 0)
-				index = searches.size();
-
-			highlightItem(searches.get(--index), sizes.get(index), Color.cyan, true);
-		});
 	}
 
 	// Adds the CTRL F highlight onto the specified indices
-	private void highlightItem(int start, int size, Color c, boolean unique) {
+	private void highlightUniqueItem(int start, int size, Color colour) {
+		text.getHighlighter().removeAllHighlights();
+		highlightItem(start, size, colour);
+	}
+
+	private void highlightItem(int start, int size, Color colour) {
 		Highlighter highlighter = text.getHighlighter();
+		HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(colour);
 
-		if (unique)
-			highlighter.removeAllHighlights();
-
-		HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(c);
 		try {
 			highlighter.addHighlight(start, start + size, painter);
 		} catch (BadLocationException e) {
-			JOptionPane.showMessageDialog(null, "Invalid index");
+			throw new AssertionError("Invalid index for highlightItem()");
 		}
 	}
 }

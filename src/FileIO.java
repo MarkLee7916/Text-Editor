@@ -19,21 +19,30 @@ public class FileIO {
 	}
 
 	public void addFileMenuBehaviour(JMenuItem save, JMenuItem exit, JMenuItem openAppend, JMenuItem open) {
-		// Uses JFileChooser to let the user navigate to the file they want, then
-		// save the text into it
+		addOpenBehaviour(openAppend, open);
+		addExitBehaviour(exit);
+		addSaveBehaviour(save);
+	}
+
+	// Lets user navigate to a file and save 
+	private void addSaveBehaviour(JMenuItem save) {
 		save.addActionListener(actionEvent -> {
 			JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 
 			if (jfc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
 				saveText(text.getText(), jfc.getSelectedFile());
 		});
+	}
 
+	// Exits program and closes GUI
+	private void addExitBehaviour(JMenuItem exit) {
 		exit.addActionListener(actionEvent -> {
 			System.exit(0);
 		});
+	}
 
-		// Uses JFileChooser to let the user to navigate to the file they want, then
-		// loads the text from it. Appends the files contents onto the texts contents
+	private void addOpenBehaviour(JMenuItem openAppend, JMenuItem open) {
+		// Lets user navigate to a file and loads it, appending onto current content
 		openAppend.addActionListener(actionEvent -> {
 			JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 
@@ -41,8 +50,7 @@ public class FileIO {
 				loadText(jfc.getSelectedFile());
 		});
 
-		// Uses JFileChooser to let the user to navigate to the file they want, then
-		// loads the text from it. Replaces the texts contents with the file contents
+		// Lets user navigate to a file and loads it, replacing current contents
 		open.addActionListener(actionEvent -> {
 			JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 

@@ -34,12 +34,15 @@ import javax.swing.text.Highlighter.HighlightPainter;
 
 public class GUI {
 	private JTextArea text;
+	
+	public GUI() {
+		text = new JTextArea(20, 40);
+	}
 
 	public void makeComponents() {
 		// Create components
 		JFrame frame = new JFrame("Text Editor");
 		JPanel panel = new JPanel();
-		text = new JTextArea(20, 40);
 		JTextField textSearch = new JTextField(20);
 		JScrollPane scroller = new JScrollPane(text);
 		JButton search = new JButton("Search");
@@ -67,9 +70,8 @@ public class GUI {
 		Search s = new Search(text);
 		s.addSearchBehaviour(search, prev, next, regex, textSearch);
 
-		// Configure scroller
-		scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		configureScroller(scroller);
+		configureTextArea();
 
 		// Add everything to panel, then configure frame
 		frame.getContentPane().add(scroller);
@@ -83,7 +85,14 @@ public class GUI {
 		frame.setSize(800, 800);
 		frame.setVisible(true);
 
-		// Configure textArea
+	}
+
+	private void configureScroller(JScrollPane scroller) {
+		scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);	
+	}
+	
+	private void configureTextArea() {
 		text.requestFocusInWindow();
 		text.setLineWrap(true);
 	}
